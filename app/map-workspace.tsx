@@ -1,0 +1,18 @@
+'use client';
+import {useState} from 'react';
+import {InteractiveMap} from './interactive-map';
+import {Map,Globe2,Satellite,PersonStanding,ExternalLink,Layers,MapPin,Compass,Maximize2} from 'lucide-react';
+type MapMode='map'|'satellite'|'street'|'earth';
+const places=[{name:'London · South Bank',lat:51.505,lng:-.119},{name:'Charlotte · City center',lat:35.2271,lng:-80.8431},{name:'New York · Midtown',lat:40.758,lng:-73.9855}];
+export function MapWorkspace(){
+ const [mode,setMode]=useState<MapMode>('map');const [placeIndex,setPlaceIndex]=useState(0);const [external,setExternal]=useState(false);const place=places[placeIndex];const center=`${place.lat},${place.lng}`;
+ const satellite=`https://www.google.com/maps/@?${new URLSearchParams({api:'1',map_action:'map',center,zoom:'16',basemap:'satellite'})}`;
+ const street=`https://www.google.com/maps/@?${new URLSearchParams({api:'1',map_action:'pano',viewpoint:center})}`;
+ const roadmap=`https://www.google.com/maps/@?${new URLSearchParams({api:'1',map_action:'map',center,zoom:'15',basemap:'roadmap'})}`;
+ const modes:{id:MapMode;label:string;icon:typeof Map}[]=[{id:'map',label:'Map',icon:Map},{id:'satellite',label:'Satellite',icon:Satellite},{id:'street',label:'Street View',icon:PersonStanding},{id:'earth',label:'3D Earth',icon:Globe2}];
+ return <div className="real-map-workspace"><div className="map-mode-toolbar">{modes.map(m=><button key={m.id} className={mode===m.id?'active':''} onClick={()=>{setMode(m.id);setExternal(false);}}><m.icon size={14}/>{m.label}</button>)}<label><MapPin size={12}/><select aria-label="Map example location" value={placeIndex} onChange={e=>setPlaceIndex(+e.target.value)}>{places.map((p,i)=><option value={i} key={p.name}>{p.name}</option>)}</select></label></div>
+ <div className="real-map-body">{mode==='map'?<InteractiveMap lat={place.lat} lng={place.lng} name={place.name}/>:<div className="map-provider-state"><div className="provider-grid"/><div className="provider-orbits"><Globe2 size={80}/><i/><i/></div><span className="provider-label">{mode==='satellite'?'SATELLITE IMAGERY':mode==='street'?'STREET-LEVEL EXPLORATION':'PHOTOREALISTIC 3D'}</span><h2>{mode==='earth'?'Explore the world in 3D':mode==='street'?'Explore the scene at street level':'See the geographic context'}</h2><p>Google Maps is not connected inside PARALLAX yet. You can open the real {mode==='satellite'?'satellite map':mode==='street'?'Street View panorama':'Google Earth globe'} in a new tab.</p><a href={mode==='satellite'?satellite:mode==='street'?street:'https://earth.google.com/web/'} target="_blank" rel="noopener noreferrer" onClick={()=>setExternal(true)}><ExternalLink size={14}/>Open {mode==='earth'?'Google Earth':mode==='street'?'Street View':'satellite map'}</a><span className="provider-status">{external?'External view opened. Embedded integration is pending.':'IN-APP PROVIDER CONNECTION PENDING'}</span><div className="provider-capabilities"><span><CheckMark/>Pan & zoom</span><span><CheckMark/>{mode==='street'?'Panorama navigation':'Global imagery'}</span><span><CheckMark/>{mode==='earth'?'Orbit & tilt':'Location context'}</span></div></div>}
+ {mode==='map'&&<div className="real-map-label"><Compass size={16}/><div><b>{place.name}</b><small>INTERACTIVE MAP · EXAMPLE AREA</small></div><a href={roadmap} target="_blank" rel="noopener noreferrer" aria-label="Open example area in Google Maps"><ExternalLink size={14}/></a></div>}
+ </div><div className="real-map-footer"><span>{mode==='map'?'OpenStreetMap · interactive map':'Google Maps Platform · integration planned'}</span><span>Map imagery provides context, not live person locations.</span></div></div>;
+}
+function CheckMark(){return <span className="provider-check">✓</span>;}
