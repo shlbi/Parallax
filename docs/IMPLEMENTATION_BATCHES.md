@@ -16,7 +16,7 @@ manual review, not unknown-face identification or cross-camera tracking.
 | Batch | Scope | Status |
 | --- | --- | --- |
 | 1 | Existing workspace regressions and automated tests | Code and local checks complete; full app/browser validation pending |
-| 2 | Durable cases, access controls and offline-consent authorization records | Not started |
+| 2 | Durable cases, access controls and offline-consent authorization records | Implemented; backend/gateway tested; full frontend and PostgreSQL validation pending |
 | 3 | Validated file intake and explicitly permitted-source retrieval | Not started |
 | 4 | Persistent evidence, review decisions, graph/analytics scope and replay | Not started |
 | 5 | Case-grounded Ask PARALLAX with citations | Not started |
@@ -88,3 +88,24 @@ layout. Later batches remain paused regardless of these outstanding checks.
 Node 22.13's built-in TypeScript stripping executes the pure helper without a new
 runtime dependency. It does not typecheck and does not support TSX rendering:
 https://nodejs.org/download/release/v22.13.0/docs/api/typescript.html
+
+## Batch 2 checkpoint
+
+Built on batch 1 commit `3aaa5afa56ee1c01aef3130b926603ba41bd4274`.
+Added a FastAPI/SQLAlchemy case service, explicit schema migration and account CLI,
+owner/editor/viewer membership, hashed sessions and CSRF, durable authorization
+records for written consent held offline, revocation, optimistic version checks,
+atomic audit events, a same-origin Next.js gateway, and an additive `/cases` screen.
+The original fictional workspace and batch-1 changes remain intact.
+
+73 backend tests passed (93% statement coverage), including a real Uvicorn HTTP
+round-trip through the Node gateway. 34 gateway tests plus the existing 68 checks
+also passed: 175 tests total. The gateway passed targeted strict TypeScript
+checking; new TS/TSX files passed syntax/transpilation checks. These are not full
+frontend browser tests. PostgreSQL DDL compilation passed, but no PostgreSQL server
+or driver was available for a live database test. No live provider calls ran.
+
+Read `backend/README.md` for setup, semantics and limitations. Read
+`docs/BATCH2_CHECKPOINT.md` for the verification breakdown. No merge to main or
+production release is part of this checkpoint. Batch 3 and later remain paused
+until the owner explicitly says continue.

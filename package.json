@@ -11,7 +11,7 @@
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test tests/workspace-regressions.test.mjs tests/component-wiring.test.mjs"
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

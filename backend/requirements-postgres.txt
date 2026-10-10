@@ -1,0 +1,3 @@
+# Optional cloud driver; not installed or integration-tested in Batch 2.
+-r requirements.txt
+psycopg[binary]==3.3.6
